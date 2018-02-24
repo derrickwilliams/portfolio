@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="output"></div>
+  <pre id="treeJSON"></pre>
+  <!-- Load Babel -->
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+  <script src="./data.js"></script>
+  <script type="text/babel">
+    // This should be in a separate JS file but the standalone babel compiler wasn't cooperating
+    // could do without babel for these functions but I like es6 syntax!!!
+    const filter = (list, predicate) => {
+      const filtered = [];
+      const len = list.length;
+
+      for (let i = 0; i < len; i++) {
+        const target = list[i];
+        if (predicate(target) === true) {
+          filtered.push(target);
+        }
+      }
+
+      return filtered;
+    };
+
+    // findRootItems could just reuse findChildItems and pass in null as the parentId
+    //   leaving as is - I'll trade a little repetition for clarity of intent
+    // const findRootItems = list => findChildItems(list, null);
+    const findRootItems = list => filter(list, i => i.parent === null);
+    const findChildItems = (list, parentId) => filter(list, i => i.parent === parentId);
+
+    // starts the main truck of tree list for root nodes (nodes without parents)
+    const toTree = list => {
+      const rootItems = findRootItems(list);
+      return rootItems.map(r => getSection(list, r));
+    }
+
+    // recursive function to build each node section
+    const getSection = (list, item) => {
+      const children = findChildItems(list, item.id)
+      return {
+        ...item,
+        children: children.map(c => getSection(list, c))
+      }
+    }
+  </script>
+
+  <script type="text/babel">
+      const treeData = toTree(rawData);
+      document.getElementById('treeJSON').innerText = JSON.stringify(treeData, null, 2);
+      // ReactDOM.render(<Tree items={rawData} />, document.getElementById('output'));
+    </script>
+</body>
+
+</html>

@@ -6,6 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
+
+  <style>
+    .children {
+      margin-left: 20px;
+    }
+  </style>
 </head>
 
 <body>
@@ -59,7 +65,36 @@
   <script type="text/babel">
       const treeData = toTree(rawData);
       document.getElementById('treeJSON').innerText = JSON.stringify(treeData, null, 2);
-      // ReactDOM.render(<Tree items={rawData} />, document.getElementById('output'));
+
+      /* components:
+        - Tree: main container
+        - NodeSection: container for a parent node and a list of child nodes
+        - Node: base node component with specification as a Parent and/or Child
+      */
+
+      class Tree extends React.Component {
+        render() {
+          return this.props.data.map(d => <NodeSection root={d} />)
+        }
+      }
+
+      class NodeSection extends React.Component {
+        render() {
+          const root = this.props.root;
+          const children = root.children;
+
+          return (
+            <div>
+              <h1>{root.name}</h1>
+              <div class="children">
+                {children.map(c => <NodeSection root={c} />)}
+              </div>
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(<Tree data={treeData} />, document.getElementById('output'));
     </script>
 </body>
 

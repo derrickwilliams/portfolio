@@ -6,12 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
-
-  <style>
-    .children {
-      margin-left: 20px;
-    }
-  </style>
+  <link rel="stylesheet" href="./style.css" />
 </head>
 
 <body>
@@ -74,7 +69,13 @@
 
       class Tree extends React.Component {
         render() {
-          return this.props.data.map(d => <NodeSection root={d} />)
+          return (
+            <div class="tree">
+              {this.props.data.map(d => (
+              <NodeSection root={d} />
+              ))}
+            </div>
+          );
         }
       }
 
@@ -83,9 +84,14 @@
           const root = this.props.root;
           const children = root.children;
 
+          const hasChildren = children.length > 0;
+
           return (
             <div>
-              <h1>{root.name}</h1>
+              <div class="parent node">
+                <img class="thumbnail" src={root.thumbnail.href} />
+                <span class="name">{root.name}</span>
+              </div>
               <div class="children">
                 {children.map(c => <NodeSection root={c} />)}
               </div>

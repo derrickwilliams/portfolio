@@ -1,0 +1,43 @@
+.tree {
+  width: 500px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.node {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  /* margin-left: 20px; */
+}
+
+.node .node {
+  margin-left: 20px;
+}
+
+.expander {
+  margin-left: 5px;
+}
+
+.node-heading {
+  background-color: #0984e3;
+  border: dashed 2px #636e72;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.expandable-node {
+  cursor: pointer;
+}
+
+.children {
+  margin-left: 20px;
+}
+
+.thumbnail {
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  margin-right: 10px;
+  border-radius: 5px;
+}

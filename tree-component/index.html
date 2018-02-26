@@ -6,11 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
   <link rel="stylesheet" href="./style.css" />
 </head>
 
 <body>
   <div id="output"></div>
+  <hr />
   <pre id="treeJSON"></pre>
   <!-- Load Babel -->
   <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
@@ -50,10 +52,9 @@
     // recursive function to build each node section
     const getSection = (list, item) => {
       const children = findChildItems(list, item.id)
-      return {
-        ...item,
+      return Object.assign(item, {
         children: children.map(c => getSection(list, c))
-      }
+      });
     }
   </script>
 
@@ -80,20 +81,41 @@
       }
 
       class NodeSection extends React.Component {
+        state = {
+          showChildren: false
+        }
+        toggleShowChildren() {
+          const newState = Object.assign(this.state, { showChildren: !this.state.showChildren });
+          this.setState(newState);
+        }
         render() {
           const root = this.props.root;
           const children = root.children;
 
           const hasChildren = children.length > 0;
+          const showChildren = this.state.showChildren;
+
+          const childrenList = showChildren ? children.map(c => <NodeSection root={c} />) : <div />;
+
+          const expander = hasChildren ?
+            (showChildren ?
+              <img src="./expand-down.png" /> :
+              <img src="./expand-right.png" />) :
+            '';
+
+          const headingNodeClasses = hasChildren ?
+            'node-heading expandable-node' :
+            'node-heading';
 
           return (
             <div>
               <div class="parent node">
-                <img class="thumbnail" src={root.thumbnail.href} />
-                <span class="name">{root.name}</span>
-              </div>
-              <div class="children">
-                {children.map(c => <NodeSection root={c} />)}
+                <div class={headingNodeClasses} onClick={() => this.toggleShowChildren()}>
+                  <img class="thumbnail" src={root.thumbnail.href} title={root.thumbnail.description} />
+                  <div class="name">{root.name}</div>
+                  <div class="expander">{expander}</div>
+                </div>
+                {childrenList}
               </div>
             </div>
           );
